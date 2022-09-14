@@ -142,7 +142,7 @@ q \quad si \quad y \quad = -1+x\\
 \end{array}\right. \\
 $$
 
-Sea $X_0 = \{x_0, x_1, \cdots\}$ una cadena de markov con espacio de estándar $S$. A la variable aleatoria se le llama estado inicial de la cadena de markov y su distribución degamos 
+Sea $X_0 = \{x_0, x_1, \cdots\}$ una cadena de markov con espacio de estándar $S$. A la variable aleatoria se le llama estado inicial de la cadena de markov y su distribución digamos 
 $$
 \mathbb \Pi(x) = P(X_0 = x) \quad \forall x\in S
 $$
@@ -241,11 +241,11 @@ Calcular la matriz de transición de un sólo paso y la de $n$ pasos
 - $$
   P(S_i,S_j) = \begin{matrix}
   & S_1 & S_2 & \cdots & S_n \\
-  S_1 & 0 & 0 & \cdots & 0\\
-  S_2 & 0 & 1 & \cdots & n\\
-  S_3 & 0 & 4 & \cdots & 2n\\
+  S_1 & q & p & \cdots & 0\\
+  S_2 & 0 & q & \cdots & 0\\
+  S_3 & 0 & 0 & \cdots & 0\\
   \vdots & \vdots & \vdots & \ddots & \vdots\\
-  S_n & 0 & n & \cdots & n²
+  S_n & 0 & 0 & \cdots & q
   \end{matrix}
   $$
 
@@ -261,4 +261,213 @@ Calcular la matriz de transición de un sólo paso y la de $n$ pasos
   \end{eqnarray}
   $$
 
-- 
+Para cada $n=0,1,\cdots$ denotaremo $\Pi_n = \{\Pi_n(x), \quad x \in B\}$ la distribución de $x_n$ es decir
+$$
+\Pi_n(x)= P(x_n=x)
+$$
+En particular, $\Pi_0$ es la distribución inicial de la Cadena de Markov, $x_0=\{x_n\}$. Interpretando $\Pi_n$ como un vector fila. Se detiene que 
+$$
+\Pi_n=\Pi_0P_n=\Pi_oP^n,\quad \forall n = 1,2,\cdots
+$$
+o bien
+$$
+\Pi_n=\Pi_0P_{n-1},\quad \forall n = 1,2,\cdots
+$$
+
+### El problema de la ruina del jugador
+
+Supongamos que un jugador comienza operaciones con un capital de $x$ dólares y juega contra un oponente con capital $b-x$ dólares.
+
+En cada juego nuestro jugador tiene probabilidad de ganar $p$ y probabilidad de perder $q=1-p$. Los juegos se asumen independientes con $0<p<1, \quad 0<x<b$, el proceso continua hasta que el capital de nuestro jugador alcance el $0$ *la ruina* o el capital $b$ *victoria*.
+
+Sea $A = \{\text{eventual ruina}\}$, $B_1=\{\text{El jugador gana el primer juego}\}$ y $B_2= \{\text{El jugador pierde el primer juego}\}$
+$$
+\begin{eqnarray}
+P(A) &=& P(A\cap(B_1\cup B_2)) = P((A\cap B_1) \cup (A\cap B_2))\\
+&=& P(A\cap B_1) + P(A\cap B_2)\\
+&=& \left(\frac{P(A\cap B_1)}{P(B_1)}\right)P(B_1)+\left(\frac{P(A\cap B_2)}{P(B_2)}\right)P(B_2)\\
+&=& P(A | B_1)P(B_1)+P(A | B_2)P(B_2)\\
+&=& P(A | B_1)p+P(A | B_2)q
+\end{eqnarray}
+$$
+**Nota:**Se tiene que para $B_1$ y $B_2$ eventos tales que $B_1\cup B_2 = \Omega \quad P(B_1), P(B_2)\neq0 \quad B_1\cap B_2 = 0$  $P(A)= P(A | B_1)p+P(A | B_2)q$  como Teorema de probabilidad total. 
+
+Denotamos la probabilidad de eventual ruina con capital inicial $x$ como $h(x)$ luego del razonomiento analítico:
+$$
+\begin{matrix}
+h(x)= & ph(x+1) & + &q(x-1)\\
+P(A) & P(A| B_1) & & P(A|B_2)
+\end{matrix}
+$$
+
+$$
+h(x) = P(A) = P(A\cap (B_1\cup B_2)) = P((A \cap B_1) \cup (A\cap B_2))\\
+h:\{0,1,\cdots,b\}\rightarrow [0,1]
+$$
+
+
+
+- ¿Qué pasa con $h(0)$?$\qquad h(0) = 1$
+
+- ¿Qué pasa con $h(b)$ $\qquad h(b) = 0$
+
+
+
+La ecuación diferencial anterior se puede escribir en forma estándar como sigue:
+$$
+ph(x+2)-h(x+1)+qh(x) = 0\\
+x = 0,1,2,\cdots, b-2,\qquad h(0) = 1 \quad h(b)= 0
+$$
+Para resolver lo anteior asumimos 
+$$
+h(x) = \lambda^x=e^{x\ln \lambda}
+$$
+entonces:
+$$
+P\lambda^{x+2}-\lambda^{x+1}+q\lambda^x=\lambda^x(p\lambda^2-\lambda+q)=0
+$$
+
+
+Con $\lambda^x\neq 0$, tenemos que
+$$
+\begin{eqnarray}
+(&p&\lambda^2-\lambda+q)= 0 \quad \text{y}\\
+\lambda&=&\frac{1}{2p}(1\pm \sqrt{1-4pq})\\
+&=& \frac{1}{2p}(1\pm |p-q|)
+\end{eqnarray}
+$$
+Porque
+$$
+\begin{eqnarray}
+(p-q)^2&=&p^2-2pq+q^2\\
+&=&p^2-2pq-4pq+q^2\\
+&=&(p+q)^2-4pq\\
+&=&1-4pq
+\\
+1-p &=& q
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+\lambda_1 &=& \frac{1}{2p}(1+p-q)\\
+&=& \frac{1+p-q}{2p}\\
+&=&1
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+\lambda_2 &=& \frac{1}{2p}(1-p+q)\\
+&=& \frac{q}{p}
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+p-q&=&p-(1-p)\\
+&=&|2p-1|
+\end{eqnarray}
+$$
+
+**Caso 1** $\quad p\neq q$ Entonces $\lambda_1 \neq \lambda_2$ y
+$$
+\text{Ecuación general: }\quad
+h(x)= A\lambda_1^x+C\lambda_2^x = A + C\left(\frac{q}{p}\right)^x\\
+1=h(0) = A+C\\
+0=h(b)=A+C\left(\frac{q}{p}\right)^x
+$$
+Resolviendo el sistema anterior
+$$
+A = \frac{-\left(\frac{q}{p}\right)^b}{1-\left(\frac{q}{p}\right)^b} \qquad C = \frac{1}{1-\left(\frac{q}{p}\right)^b}\\\\
+\therefore \quad h(x)=\frac{\left(\frac{q}{p}\right)^x-\left(\frac{q}{p}\right)^b}{1-\left(\frac{q}{p}\right)^b}
+$$
+**Caso 2** $\quad p=q=\frac{1}{2}$
+
+$\lambda_1=1,\quad \lambda_2=1$ Luego tenemos raíces repetidos en caso la solución.
+$$
+h(x)= A\lambda^x+Cx\lambda^x = A+Cx\\
+1=h(0)= A
+0=h(b)= A+Cb
+$$
+
+$$
+A = 1 \qquad C = \frac{-1}{b}\\\\
+\therefore \quad h(x)=1-\frac{1}{b}x=\frac{b-x}{b}
+$$
+
+### Resumiendo
+
+En resumen tenemos lo siguiente;
+
+*grafica*
+$$
+h(x)= \left\lbrace 
+\begin{matrix}
+\frac{\left(\frac{q}{p}\right)^x-\left(\frac{q}{p}\right)^b}{1-\left(\frac{q}{p}\right)^b} &\quad si \quad p\neq q\\
+\frac{b-x}{b} & si \quad p=q = \frac{1}{2}
+\end{matrix} \right.
+$$
+donde la gráfica anterior, es la gráfica $x$ contra $h(x)$ ($x$ el capital inicial del jugador y $h(x)$ la probabilidad de ruina con dicho capital).
+
+Similarmente, sea $g(x)$ la probabilidad de victoria eventual, empezando con un capital de $x$ dólares. No podemo concluir inmediatamente que $g(x)=1-h(x)$ puesto que existe la posibilidad de que el juego nunca termine, esto es que la fortuna del jugador oscile entre $1$ y $b-1$ 
+$$
+p^iq^j\qquad i+j=n \quad 0 \le i,j \le 1\\\\
+\therefore \qquad \lim_{n\rightarrow \infty} p^iq^j\le \lim_{n\rightarrow \infty} \max\{p,q\}^n = 0
+$$
+Considerando $R_i$ como la ganancia obtenida por el jugador en el $i-ésimo$ intento.
+$$
+P(R_i=1)= P,\qquad P(R_i=-1)= q
+$$
+Luego el capital del jugador en el $n-ésimo$ juego es:
+$$
+x+\sum_{i=1}^n R_i
+$$
+Y entonces $h(x)$ la podemos definir como:
+$$
+h(x) = P\left(\{\text{Para algun, } x+\sum_{i=1}^nR_i\}=0, \quad 0< x+\sum_{i=1}^k R_i < b, \qquad k = 1,2,\cdots, n-1\}\right)\\
+$$
+El modelo anterior, puede ser identificado como una caminata aleatoria con estados --absorventes, $0$ y $b$.
+
+--
+
+### Hacia la caminata aleatoria
+
+Tenemos 2 jugadores, cada uno con capital, el primer jugador tiene $x$ dólares iniciales y el segundo jugador tiene $x-b$ dólares iniciales, durante cada partida el jugador $1$ tiene la probabilidad de ganar $p$ y el jugador 2 de $q$ donde $q = 1-p$, este proceso sigue hasta que nuestro jugador alcance $0$ ó $b$ capital.
+$$
+v_n = x+ \sum_{i=1}^n R_i\\\\
+P(\epsilon_0=1)= p=1-q\\
+P(x,y) = \left\lbrace
+\begin{array}{ll}
+p \quad si \quad y \quad = 1+x\\
+q \quad si \quad y \quad = -1+x\\
+0 \qquad \text{en otro caso}
+\end{array}\right. \\
+$$
+
+
+ 
+
+--
+
+Ahora investigaremos el efecto de remover uno o ambos estaos absorbentes. Si $h_b(x)$ la probabilidad de ruina eventual comenzando en $X$, cuando la capital total es $b$. Es razonable esperar que 
+$$
+\lim_{b\rightarrow \infty} h_b(x)
+$$
+sea la probabilidad de ruina eventual comenzando en $x$, cuando el jugador posee la mala fortuna de enfrentarse a un adversario con capital infinito. Llamemos a tal probabilidad $h^*(x)$ . Tenemos que 
+$$
+h^*(x) = P(A)=\\ P\{\text{Para algun entero positivo b, el capital del jugador alcanza el 0 antes que el capital b}\}
+$$
+ Sea $A_b = \{\text{0 es alcanzado antes que b}\}$, por lo que $A_{n-1} \sube A_n$, recordando que 
+$$
+P\left(\bigcup_{n=1}^\infty A_n\right)  = \lim_{n\rightarrow \infty} P(A_n)
+$$
+
+$$
+\lim_{b\rightarrow \infty}h^*(x)= \left\lbrace 
+\begin{matrix}
+\left(\frac{q}{p}\right)^x &\quad si \quad p > q\\
+1 & \quad p \ge q
+\end{matrix} \right.
+$$
+
