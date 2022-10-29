@@ -1,0 +1,92 @@
+---
+title: "133 Cards required until ace"
+output: html_notebook
+---
+
+**Ejercicio 1.33**: Las cartas de un mazo normal son colocadas hasta que un A's aparezca.
+
+Simular la media y la varianza del número de cartas requeridas para que ocurra este suceso.
+
+```{r}
+cartas <- rbinom(54, 54, 0.074074074)
+cartas
+```
+
+## Simulation Bob's pizza
+
+```{r}
+
+trials <- 10000
+simlist <- numeric(trials)
+toppings <- c("pepper", "pepperoni", "pineapple", "prawns", "prosciutto")
+for (i in 1:trials) {
+  pineapple <- 0
+  pepperoni <- 0
+  while (pineapple == 0) {
+    pick <- sample(toppings, 1)
+    if(pick == "pepperoni")
+      pepperoni <- pepperoni +1
+    if(pick == "pineapple")
+      pineapple <- 1
+  }
+  simlist[i] <- pepperoni
+}
+mean(simlist)
+
+```
+
+```{r}
+
+```
+
+
+
+
+## Ruina del jugador
+
+```{r}
+gamble <- function(k,n,p) {
+  
+	stake <- k # Capital 
+	
+	while (stake > 0 & stake < n) {
+		bet <- sample(c(-1,1),1,prob=c(1-p,p))
+		stake <- stake + bet
+	}
+	
+	if (stake == 0) 
+	   return(1) 
+	else 
+	  return(0)
+	}   
+```
+
+
+```{r}
+k  <- 30
+n <- 80
+p <- 1/2
+trials <- 12
+simlist <- replicate(trials, gamble(k, n, p))
+mean(simlist)
+```
+```{r}
+trials <- 10000
+simlist <- numeric(trials)
+coins <- c("tail", "head")
+for (i in 1:trials) {
+  intents <- 0
+  aux <- ""
+  pick <- sample(coins, 1)
+  while (aux != pick) {
+    pick <- sample(coins, 1)
+    print(pick)
+    intents <- intents  + 1
+    aux = pick
+  }
+    
+  simlist[i] <- intents
+}
+mean(simlist)
+```
+

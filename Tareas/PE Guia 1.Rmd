@@ -1,0 +1,280 @@
+---
+title: "PE Guia 1"
+author: "Perea Riubi Verduzco"
+date: "23/10/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Indicaciones**: La siguiente es una lista de ejercicios para prepararse para el primer parcial. Los ejercicios son sacados del libro; Introduction to stochastic processes with R-John Wiley and Sons, de R. Dobrow.
+
+# 1.32 Flipping Coin
+
+Simule el lanzamiento de tres monedas justas y cuente el numero de caras X.
+
+- Use su simulacion para estimar $P(X = 1)$ y $E(X)$.
+- Modifique lo anterior para permitir que exista una moneda cargada con $P(cara) = 3/4$.
+
+**rbinom(intentos,monedas,p)**: Genera n=experimentos, cada uno de los cuales consta de lanzar tres monedas (ensayos, parametro dos) y cada uno de estos ensayos, consta de una probabilidad "p" de salir cara
+
+**table(vector)**: Permite imprimir la frecuencia con que se presenta cada uno de los resultados generados. En este caso, imprime la frecuencia con que se salen 0,1,2 o 3 caras en el lanzamiento de las 3 monedas.
+
+```{r}
+intentos<-1000
+monedas<-3
+p<-(1/2)
+
+simlist<-rbinom(intentos,monedas,p)
+# print(simlist)
+
+ print("En resumen, la frecuencia de cada X=número de caras es: ")
+ print(table(simlist))
+```
+
+(a) Use su simulacion para estimar P(X = 1) y E(X).
+
+```{r}
+#En funcion del valor del que desee calcular la proba, solo modificamos el valor del if dentro de la funcion
+proba_valoresp<-function(simlist, intentos){
+  frecuencia<-0
+  for(i in 1:intentos){
+    if(simlist[i] == 1){
+      frecuencia <- frecuencia+1
+    }
+  }
+  proba <- frecuencia/intentos
+  return (proba)
+}
+
+print("La probabilidad P(X=1) =", )
+proba_valoresp(simlist, intentos)
+
+```
+E(X)=
+
+```{r}
+print(mean(simlist))
+```
+
+b) Modifique lo anterior para permitir que las monedas estén cargadas con  probabilidad P(cara) = 3/4.
+
+En esta ocasion, generare dos vectores: "valores_esp" ira recolectando el numero de veces que sale un numero especifico de caras, en este caso, contara las veces que sale 1 cara (validando con el if).
+
+El vector "general" ira guardando el numero de caras que sale en cada experimento, sin importar el numero, ya sean 0,1,2 o 3 caras las que hayan salido.
+
+```{r}
+intentos <- 1000
+
+valores_esp <- numeric(intentos)
+general <- numeric(intentos)
+
+for (i in 1:intentos){
+  caras <- sample(c(0,1),3,prob=c(1/4,3/4),replace = TRUE)
+  if(sum(caras)==1){
+    valores_esp[i]<-1
+  }else{
+    valores_esp[i]<-0
+  }
+  
+  general[i]<-sum(caras)
+}
+
+```
+
+Así, la probabilidad P(X=1) = 
+
+```{r}
+mean(valores_esp)
+```
+La E(X)=
+
+```{r}
+mean(general)
+```
+
+# 1.33 Cards until ace appear
+
+
+Se sacan cartas de un deck estándar, con reemplazo, hasta que aparezca un as. 
+Simule la media y la varianza del numero de cartas requerido.
+
+```{r}
+intentos <- 5000
+# sea 1,2,3,4 el numero con el que denotaremos a los ases de las 52 cartas posibles
+simlist <- numeric(intentos)
+for (i in 1:intentos){
+  cantidad <- 0
+  as <- 0
+  while (as==0){
+    carta <- sample(1:52,1,replace=TRUE)
+    cantidad <- cantidad + 1
+    if(carta <= 4){
+     as <- 1 
+    }
+  }
+simlist[i] <- cantidad
+}
+
+#print(simlist)
+
+```
+
+La media de cartas necesarias a extraer para obtener un as es:
+
+```{r}
+print(mean(simlist))
+```
+La varianza del numero de cartas necesarias a extraer hasta obtener un as son:
+
+```{r}
+print(var(simlist))
+```
+# 1.34 Time until a bus arrives
+
+El tiempo hasta que un autobús llegue está dado por una distribución exponencial con una media de $30$ minutos.
+
+- **a)** Use el comando *rexp()* para simular la probabilidad de que el autobús llegue en los primeros 20 minutos.
+
+```{r}
+simData <- rexp(1000, 1/30)
+veces <- length(simData[simData < 20])
+p <- veces/1000
+cat('P=', p )
+```
+
+
+- **b)** Use el comando *pexp()* para comparar con la probabilidad exacta.
+
+```{r}
+pCal <- pexp(20, rate = 1 / 30)
+cat('Pcal=', pCal )
+```
+
+
+# 1.35 Gamblersruin $60
+
+- **a)** La probabilidad de ganar 100, empezando con 60 y con una probabilidad de ganar de 0.50
+
+- **b)** La probabilidad de ganar 100, empezando con 60 y con una probbailidad de ganar del 0.51
+
+```{r}
+# gamble(k, n, p)
+  #   k: Gambler's initial state
+  #   n: Gambler plays until either $n or Ruin
+  #   p: Probability of winning $1 at each play
+  #   Function returns 1 if gambler is eventually ruined
+  #                    returns 0 if gambler eventually wins $n
+ 
+
+gamble <- function(k,n,p) {
+  
+	stake <- k # Capital 
+	
+	while (stake > 0 & stake < n) {
+		bet <- sample(c(-1,1),1,prob=c(1-p,p))
+		stake <- stake + bet
+		
+	}
+	
+	
+	if (stake == 0) 
+	   return(1) 
+	else 
+	  return(0)
+	
+	
+}   
+```
+
+```{r}
+k <- 60 
+n <-  100  
+p <- 0.50  # Probabilidad de ganar cada intento
+trials <- 1000 # Numero de intentos del juego
+simlist <- replicate(trials, gamble(k, n, p)) # LLevamos a cabo varios intentos del juego y guardamos los resultados en un vector
+# print(simlist)
+1 - mean(simlist) # Estimate of probability that gambler is ruined
+# For p = 0.5, exact probability is (n-k)/n 
+```
+
+
+```{r}
+x<- 60  # Capital inicial 
+b<- 100  # Monto total
+p<- 0.51 # Probabilidad de victoria de cada juego
+trials<- 1000  # Numero de veces que se llevara a cabo la simulacion de ruina del                      jugador
+simlist<- replicate(trials,gamble(x,b,p)) # replicamos los juegos muchas veces
+1 - mean(simlist)
+```
+
+# 1.36 ReedFrost people infected and suceptible
+
+Vea el ejemplo 1.2. Observe el efecto al cambiar los valores iniciales para el número de personas en ser suceptibles y infectadas. 
+
+¿Cómo afecta incrementar el número de personas infectadas la duración de la enfermedad?
+
+```{r}
+ # SIR model
+ # SIR(S0, I0, p)
+   # S0 : Initial susceptible population
+   # I0 : Initial infected population
+   # p  : Probability of getting infected
+SIR<- function(S0, I0, p){
+  
+  S0_aux <- S0
+  I0_aux <- I0
+  
+  r1 <- list()
+  X <- list()
+  Y <- list()
+  W <- list()
+  i <- 1
+  
+  while (S0 > 0){
+    C <- rbinom(S0, I0, p)
+    I1 <- length(C[C > 0]) 
+    S0 <- S0 - I1
+    I0 <- I0 + I1
+    X[i] <- S0
+    Y[i] <- I0
+    W[i] <- I1
+    i <- i + 1
+  }
+  
+  r1<- list()
+  r1[[1]]<- X
+  r1[[2]]<- Y
+  r1[[3]]<- W
+  
+  W_aux <- unlist(W)
+  time_limit <- length(W_aux)
+  infected_limit <- max(W_aux)
+  title <- paste("Susceptible: ", S0_aux, ",    Infected: ", I0_aux, ",    Prob: ", p)
+  plot(W_aux, xlab="Time (t)", ylab= "Infected number", 
+       cex=1, type="o", xlim=c(0, time_limit), ylim=c(0, infected_limit), lty="solid",
+       xaxp=c(0, time_limit, time_limit), yaxp=c(0, infected_limit, 10),
+       main = title)
+  
+  return(r1)  
+}
+```
+
+
+```{r}
+SIR(1000, 2, 0.0009)
+```
+
+# 1.37 Accidents on the Highway
+
+Calcule la media y varianza del número de accidentes por día dado que, en cualquier día, el número de accidentes en una autopista posee una distribución de Poisson con parámetro $\alpha$. El parámetro $\alpha$ varía día a día y por sí misma es una variable aleatoria. 
+
+```{r}
+simData <- rpois(1000, runif(1000, min = 0, max = 3))
+
+cat('media: ', mean(simData))
+cat('\nvarianza', var(simData))
+```
+

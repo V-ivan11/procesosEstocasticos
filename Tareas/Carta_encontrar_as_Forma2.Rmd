@@ -1,0 +1,42 @@
+---
+title: "Extraer un as de un deck"
+author: "Giovanni Perea"
+date: "2022-10-18"
+output: html_document
+---
+
+Se sacan cartas de un deck standard, con reemplazo, hasta que aparezca un as. 
+Simule la media y la varianza del numero de cartas requerido.
+
+```{r}
+intentos <- 5000
+# sea 1,2,3,4 el numero con el que denotaremos a los ases de las 52 cartas posibles
+simlist <- numeric(intentos)
+for (i in 1:intentos){
+  cantidad <- 0
+  as <- 0
+  while (as==0){
+    carta <- sample(1:52,1,replace=TRUE)
+    cantidad <- cantidad + 1
+    if(carta <= 4){
+     as <- 1 
+    }
+  }
+simlist[i] <- cantidad
+}
+
+print(simlist)
+
+```
+
+La media de cartas necesarias a extraer para obtener un as es:
+
+```{r}
+print(mean(simlist))
+```
+La varianza del numero de cartas necesarias a extraer hasta obtener un as son:
+
+```{r}
+print(var(simlist))
+```
+

@@ -113,8 +113,9 @@ P(A⁺)=P(A_1\cup (A_2|A_1) \cup \cdots) \\
 = \lim_{n\rightarrow\infty} P(A_n)
 $$
 
+$\bigcap_{n=1}^{+\infty}A_n$
 
-$\bigcap_{n=1}^{+\infty}A_n$ **b)** Toma
+ **b)** Toma
 $$
 A^{-c}=\left(\bigcap_{n=1}^{+\infty} A_n\right)^c\\
 = \bigcup_{n=1}^{+\infty}A_n^c \qquad \text{Observe que } A_1^c\subset A_2^c\subset \cdots A_{n+1}^c\\

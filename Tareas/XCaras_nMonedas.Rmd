@@ -1,0 +1,84 @@
+---
+title: "1.32 X caras en el lanzamiento de n monedas"
+author: "Giovanni Perea"
+output: html_document
+date: "2022-10-15"
+---
+1.32 Simule el lanzamiento de tres monedas justas y cuente el numero de caras X.
+(a) Use su simulacion para estimar P(X = 1) y E(X).
+(b) Modifique lo anterior para permitir que exista una moneda cargada con P(cara) = 3/4.
+
+```{r}
+intentos<-1000
+monedas<-3
+p<-(1/2)
+
+# rbinom(intentos,monedas,p): Genera n=experimentos, cada uno de los cuales consta de lanzar tres monedas (ensayos, parametro dos) y cada uno de estos ensayos, consta de una probabilidad "p" de salir cara
+simlist<-rbinom(intentos,monedas,p)
+print(simlist)
+
+# La funcion table(vector) nos permite imprimir la frecuencia con que se presenta cada uno de los resultados generados. En este caso, imprime la frecuencia con que se salen 0,1,2 o 3 caras en el lanzamiento de las 3 monedas.
+print("En resumen, la frecuencia de cada X=número de caras es: ")
+print(table(simlist))
+```
+(a) Use su simulacion para estimar P(X = 1) y E(X).
+
+```{r}
+#En funcion del valor del que desee calcular la proba, solo modificamos el valor del if dentro de la funcion
+proba_valoresp<-function(simlist, intentos){
+  frecuencia<-0
+  for(i in 1:intentos){
+    if(simlist[i] == 1){
+      frecuencia <- frecuencia+1
+    }
+  }
+  proba <- frecuencia/intentos
+  return (proba)
+}
+
+print("La probabilidad P(X=1) =")
+proba_valoresp(simlist, intentos)
+
+
+```
+E(X)=
+
+```{r}
+print(mean(simlist))
+
+```
+
+b) Modifique lo anterior para permitir que las monedas estén cargadas con  probabilidad P(cara) = 3/4.
+
+```{r}
+intentos <- 1000
+
+# En esta ocasion, generare dos vectores: "valores_esp" ira recolectando el numero de veces que sale un numero especifico de caras, en este caso, contara las veces que sale 1 cara (validando con el if).
+# El vector "general" ira guardando el numero de caras que sale en cada experimento, sin importar el numero, ya sean 0,1,2 o 3 caras las que hayan salido.
+valores_esp <- numeric(intentos)
+general <- numeric(intentos)
+
+for (i in 1:intentos){
+  caras <- sample(c(0,1),3,prob=c(1/4,3/4),replace = TRUE)
+  if(sum(caras)==1){
+    valores_esp[i]<-1
+  }else{
+    valores_esp[i]<-0
+  }
+  
+  general[i]<-sum(caras)
+}
+
+```
+
+Así, la probabilidad P(X=1) = 
+
+```{r}
+mean(valores_esp)
+```
+La E(X)=
+
+```{r}
+mean(general)
+```
+
